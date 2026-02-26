@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>🏈 Play-by-Play Creator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@700;900&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --bg: #0d0f14;
+            --sf: #151820;
+            --cd: #1c2030;
+            --bd: #2a2f45;
+            --ac: #00d4ff;
+            --a2: #7c4dff;
+            --gn: #00e676;
+            --rd: #ff4444;
+            --yw: #ffca28;
+            --tx: #e8eaf6;
+            --mt: #6b7280;
+            --r: 12px
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--tx);
+            min-height: 100vh
+        }
+
+        /* Header */
+        .site-header {
+            background: linear-gradient(135deg, #0d0f14, #151a2e);
+            border-bottom: 1px solid var(--bd);
+            padding: 13px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px)
+        }
+
+        .site-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.05rem;
+            color: var(--ac);
+            letter-spacing: 2px;
+            text-shadow: 0 0 18px rgba(0, 212, 255, .4)
+        }
+
+        .hdr-acts {
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 7px 15px;
+            border-radius: 7px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: .82rem;
+            cursor: pointer;
+            transition: all .2s;
+            white-space: nowrap
+        }
+
+        .btn-p {
+            background: linear-gradient(135deg, var(--ac), var(--a2));
+            color: #fff;
+            box-shadow: 0 3px 14px rgba(0, 212, 255, .2)
+        }
+
+        .btn-p:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, .35)
+        }
+
+        .btn-s {
+            background: 0;
+            color: var(--tx);
+            border: 1px solid var(--bd)
+        }
+
+        .btn-s:hover {
+            border-color: var(--ac);
+            color: var(--ac)
+        }
+
+        .btn-d {
+            background: var(--rd);
+            color: #fff
+        }
+
+        .btn-d:hover {
+            background: #c00
+        }
+
+        .btn-sv {
+            background: linear-gradient(135deg, #00c853, #00e676);
+            color: #000;
+            font-weight: 700;
+            box-shadow: 0 3px 14px rgba(0, 230, 118, .2)
+        }
+
+        .btn-sv:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 20px rgba(0, 230, 118, .35)
+        }
+
+        .btn-w {
+            background: linear-gradient(135deg, #e65100, #ff6d00);
+            color: #fff
+        }
+
+        .btn-w:hover {
+            transform: translateY(-1px)
+        }
+
+        .btn-sm {
+            padding: 4px 9px;
+            font-size: .75rem;
+            border-radius: 5px
+        }
+
+        /* Layout */
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 18px 13px
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 16px;
+            align-items: start
+        }
+
+        @media(max-width:750px) {
+            .two-col {
+                grid-template-columns: 1fr
+            }
+
+            .pbp-wrap {
+                max-height: 50vh
+            }
+
+            .form-card {
+                position: static
+            }
+        }
+
+        /* Controls card (Q selector + situation) */
+        .ctrl-card {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: var(--r);
+            overflow: hidden;
+            margin-bottom: 10px
+        }
+
+        .ctrl-card .q-row {
+            border-top: none
+        }
+
+        /* Scoreboard */
+        .sb {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: var(--r);
+            overflow: hidden;
+            margin-bottom: 16px
+        }
+
+        .sb-inner {
+            padding: 14px 18px;
+            background: linear-gradient(135deg, #1a2040, #0d1428)
+        }
+
+        .sb-tbl {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Inter', sans-serif
+        }
+
+        .sb-tbl th {
+            font-size: .68rem;
+            font-weight: 700;
+            color: var(--mt);
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            padding: 4px 7px;
+            text-align: center;
+            border-bottom: 1px solid var(--bd)
+        }
+
+        .sb-tbl th.team-th {
+            text-align: left;
+            min-width: 110px
+        }
+
+        .sb-tbl td {
+            padding: 5px 7px;
+            text-align: center;
+            border-bottom: 1px solid rgba(42, 47, 69, .4)
+        }
+
+        .sb-tbl tr:last-child td {
+            border-bottom: none
+        }
+
+        .tn-inp {
+            background: 0;
+            border: none;
+            color: var(--tx);
+            font-family: 'Inter', sans-serif;
+            font-size: .9rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            outline: none;
+            width: 100px
+        }
+
+        .tn-inp::placeholder {
+            color: var(--mt);
+            font-weight: 400;
+            text-transform: none;
+            font-size: .82rem
+        }
+
+        .tc-inp {
+            background: 0;
+            border: none;
+            color: var(--mt);
+            font-family: 'Inter', sans-serif;
+            font-size: .68rem;
+            outline: none;
+            width: 100px;
+            display: block;
+            margin-top: 2px
+        }
+
+        .qs-inp {
+            background: var(--cd);
+            border: 1px solid var(--bd);
+            border-radius: 4px;
+            color: var(--tx);
+            font-family: 'Orbitron', sans-serif;
+            font-size: .82rem;
+            font-weight: 700;
+            width: 38px;
+            text-align: center;
+            padding: 3px 2px;
+            outline: none;
+            transition: border-color .15s
+        }
+
+        .qs-inp:focus {
+            border-color: var(--ac)
+        }
+
+        .tot-inp {
+            background: 0;
+            border: none;
+            border-bottom: 2px solid var(--ac);
+            color: var(--ac);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            width: 42px;
+            text-align: center;
+            padding: 2px;
+            outline: none
+        }
+
+        .home-tot {
+            border-color: var(--a2);
+            color: var(--a2)
+        }
+
+        /* Quarter row */
+        .q-row {
+            padding: 9px 18px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            background: var(--cd);
+            border-top: 1px solid var(--bd);
+            flex-wrap: wrap
+        }
+
+        .q-lbl {
+            font-size: .72rem;
+            color: var(--mt);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px
+        }
+
+        .q-btns {
+            display: flex;
+            gap: 4px
+        }
+
+        .q-btn {
+            padding: 3px 10px;
+            border-radius: 5px;
+            border: 1px solid var(--bd);
+            background: 0;
+            color: var(--mt);
+            font-size: .76rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .15s
+        }
+
+        .q-btn.active {
+            background: var(--ac);
+            border-color: var(--ac);
+            color: #000
+        }
+
+        /* Situation */
+        .sit-row {
+            padding: 7px 18px;
+            display: flex;
+            gap: 9px;
+            background: var(--cd);
+            border-top: 1px solid var(--bd);
+            flex-wrap: wrap
+        }
+
+        .mi-w {
+            display: flex;
+            flex-direction: column;
+            gap: 2px
+        }
+
+        .mi-l {
+            font-size: .66rem;
+            color: var(--mt);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .8px
+        }
+
+        .mi-i {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: 5px;
+            color: var(--tx);
+            font-family: 'Inter', sans-serif;
+            font-size: .82rem;
+            padding: 4px 7px;
+            width: 74px;
+            text-align: center;
+            outline: none;
+            transition: border-color .15s
+        }
+
+        .mi-i:focus {
+            border-color: var(--ac)
+        }
+
+        /* Form card */
+        .form-card {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: var(--r);
+            padding: 16px;
+            position: sticky;
+            top: 74px
+        }
+
+        .fm-title {
+            font-size: .82rem;
+            font-weight: 700;
+            color: var(--ac);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 13px
+        }
+
+        .fg {
+            margin-bottom: 11px
+        }
+
+        .fl {
+            display: block;
+            font-size: .7rem;
+            font-weight: 600;
+            color: var(--mt);
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            margin-bottom: 4px
+        }
+
+        .fi,
+        .fs,
+        .fta {
+            width: 100%;
+            background: var(--cd);
+            border: 1px solid var(--bd);
+            border-radius: 6px;
+            color: var(--tx);
+            font-family: 'Inter', sans-serif;
+            font-size: .84rem;
+            padding: 7px 10px;
+            outline: none;
+            transition: border-color .15s, box-shadow .15s
+        }
+
+        .fi:focus,
+        .fs:focus,
+        .fta:focus {
+            border-color: var(--ac);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, .1)
+        }
+
+        .fs {
+            appearance: none;
+            cursor: pointer
+        }
+
+        .fs option {
+            background: var(--cd)
+        }
+
+        .fta {
+            resize: vertical;
+            min-height: 60px
+        }
+
+        /* PBP container — scrollable independently */
+        .pbp-wrap {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: var(--r);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 140px)
+        }
+
+        .pbp-hdr {
+            padding: 11px 16px;
+            background: var(--cd);
+            border-bottom: 1px solid var(--bd);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0
+        }
+
+        .pbp-title {
+            font-size: .86rem;
+            font-weight: 700;
+            letter-spacing: .5px
+        }
+
+        .pbp-cnt {
+            font-size: .72rem;
+            color: var(--mt);
+            background: var(--bg);
+            padding: 2px 8px;
+            border-radius: 20px
+        }
+
+        #pbpList {
+            overflow-y: auto;
+            flex: 1
+        }
+
+        /* Drive ended header */
+        .deh {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 14px;
+            background: var(--cd);
+            border-bottom: 1px solid var(--bd);
+            flex-wrap: wrap
+        }
+
+        .dtog {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 1px solid var(--bd);
+            background: 0;
+            cursor: pointer;
+            color: var(--mt);
+            font-size: .7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: .15s;
+            flex-shrink: 0
+        }
+
+        .dtog:hover {
+            border-color: var(--ac);
+            color: var(--ac)
+        }
+
+        .dteam {
+            background: 0;
+            border: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--tx);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            outline: none;
+            cursor: pointer;
+            min-width: 60px;
+            max-width: 100px
+        }
+
+        .dmi {
+            background: 0;
+            border: 0;
+            border-bottom: 1px solid var(--bd);
+            color: var(--tx);
+            font-size: .76rem;
+            outline: none;
+            padding: 1px 3px;
+            transition: border-color .15s
+        }
+
+        .dmi:focus {
+            border-color: var(--ac)
+        }
+
+        .dmi-r {
+            width: 86px
+        }
+
+        .dmi-n {
+            width: 44px;
+            text-align: center
+        }
+
+        .dmi-s {
+            width: 108px
+        }
+
+        .d-sep {
+            color: var(--bd);
+            font-size: .9rem;
+            flex-shrink: 0
+        }
+
+        .d-pc {
+            font-size: .7rem;
+            color: var(--mt);
+            white-space: nowrap;
+            flex-shrink: 0
+        }
+
+        /* Drive current header */
+        .dch {
+            padding: 7px 16px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            background: rgba(0, 212, 255, .04);
+            border-bottom: 1px solid var(--bd)
+        }
+
+        .dch-lbl {
+            font-family: 'Orbitron', sans-serif;
+            font-size: .7rem;
+            color: var(--ac);
+            letter-spacing: 1.5px
+        }
+
+        .dch-cnt {
+            font-size: .68rem;
+            color: var(--mt);
+            background: var(--bg);
+            padding: 1px 7px;
+            border-radius: 20px
+        }
+
+        .dch-line {
+            flex: 1;
+            height: 1px;
+            background: var(--bd)
+        }
+
+        /* Drive end / Halftime separators */
+        .drive-end-sep,
+        .halftime-sep {
+            padding: 9px 18px;
+            display: flex;
+            align-items: center;
+            gap: 11px
+        }
+
+        .drive-end-sep {
+            background: rgba(255, 68, 68, .04);
+            border-top: 1px solid rgba(255, 68, 68, .22);
+            border-bottom: 1px solid rgba(255, 68, 68, .22)
+        }
+
+        .halftime-sep {
+            background: linear-gradient(90deg, rgba(255, 202, 40, .06), rgba(124, 77, 255, .06));
+            border-top: 2px solid rgba(255, 202, 40, .3);
+            border-bottom: 2px solid rgba(255, 202, 40, .3)
+        }
+
+        .sep-line {
+            flex: 1;
+            height: 1px
+        }
+
+        .sep-line-r {
+            background: rgba(255, 68, 68, .2)
+        }
+
+        .sep-line-h {
+            background: rgba(255, 202, 40, .2)
+        }
+
+        .sep-lbl {
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            white-space: nowrap
+        }
+
+        .sep-lbl-r {
+            color: var(--rd);
+            opacity: .7
+        }
+
+        .sep-lbl-h {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--yw);
+            font-size: .72rem
+        }
+
+        /* Play item */
+        .play-item {
+            padding: 11px 14px;
+            border-bottom: 1px solid rgba(42, 47, 69, .5);
+            display: grid;
+            grid-template-columns: 30px 82px 1fr 72px;
+            gap: 9px;
+            align-items: start;
+            transition: background .15s;
+            position: relative
+        }
+
+        .play-item:hover {
+            background: rgba(255, 255, 255, .02)
+        }
+
+        .play-item.hl {
+            background: rgba(0, 212, 255, .07);
+            border-left: 3px solid var(--ac);
+            box-shadow: inset 4px 0 14px rgba(0, 212, 255, .09)
+        }
+
+        .play-item.editing {
+            background: rgba(124, 77, 255, .06);
+            border-left: 3px solid var(--a2)
+        }
+
+        .play-item.inserting {
+            background: rgba(255, 202, 40, .04);
+            border-left: 3px solid var(--yw)
+        }
+
+        /* Highlight button */
+        .hl-btn {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 2px solid var(--bd);
+            background: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: .2s;
+            margin-top: 1px;
+            flex-shrink: 0
+        }
+
+        .hl-btn:hover {
+            border-color: var(--ac)
+        }
+
+        .hl-btn.on {
+            border-color: var(--ac);
+            background: var(--ac);
+            box-shadow: 0 0 10px rgba(0, 212, 255, .5)
+        }
+
+        .hl-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--mt);
+            transition: .2s
+        }
+
+        .hl-btn.on .hl-dot {
+            background: #000
+        }
+
+        /* Play content */
+        .pt-col {
+            text-align: center
+        }
+
+        .pt-ql {
+            font-size: .6rem;
+            color: var(--mt);
+            font-weight: 600
+        }
+
+        .pt-time {
+            font-family: 'Orbitron', sans-serif;
+            font-size: .76rem;
+            color: var(--ac);
+            font-weight: 700
+        }
+
+        .pt-dd {
+            font-size: .66rem;
+            color: var(--mt);
+            margin-top: 2px;
+            line-height: 1.4
+        }
+
+        .pt-badge {
+            display: inline-block;
+            font-size: .6rem;
+            font-weight: 700;
+            padding: 1px 5px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-top: 3px
+        }
+
+        .pt-tag {
+            display: inline-block;
+            font-size: .63rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 4px
+        }
+
+        .pt-desc {
+            font-size: .84rem;
+            line-height: 1.55;
+            color: var(--tx);
+            word-break: break-word
+        }
+
+        .pt-sc {
+            font-size: .71rem;
+            color: var(--yw);
+            font-weight: 600;
+            margin-top: 3px
+        }
+
+        /* Tag colors */
+        .tg-pass {
+            background: rgba(0, 212, 255, .15);
+            color: var(--ac)
+        }
+
+        .tg-inc {
+            background: rgba(255, 68, 68, .15);
+            color: var(--rd)
+        }
+
+        .tg-rush {
+            background: rgba(0, 230, 118, .12);
+            color: var(--gn)
+        }
+
+        .tg-td {
+            background: rgba(255, 202, 40, .15);
+            color: var(--yw)
+        }
+
+        .tg-xp {
+            background: rgba(255, 202, 40, .08);
+            color: #e0ac00
+        }
+
+        .tg-fg {
+            background: rgba(124, 77, 255, .18);
+            color: #b388ff
+        }
+
+        .tg-punt,
+        .tg-kick {
+            background: rgba(107, 114, 128, .2);
+            color: var(--mt)
+        }
+
+        .tg-turnover {
+            background: rgba(255, 68, 68, .18);
+            color: #ff8a80
+        }
+
+        .tg-penalty {
+            background: rgba(255, 68, 68, .12);
+            color: var(--rd)
+        }
+
+        .tg-timeout {
+            background: rgba(255, 202, 40, .1);
+            color: var(--yw)
+        }
+
+        .tg-other {
+            background: rgba(107, 114, 128, .15);
+            color: var(--mt)
+        }
+
+        /* Action buttons */
+        .play-acts {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            opacity: 0;
+            transition: opacity .15s
+        }
+
+        .play-item:hover .play-acts {
+            opacity: 1
+        }
+
+        .ab {
+            width: 30px;
+            height: 26px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .74rem;
+            transition: .15s
+        }
+
+        .ab-del {
+            background: rgba(255, 68, 68, .12);
+            color: var(--rd)
+        }
+
+        .ab-del:hover {
+            background: var(--rd);
+            color: #fff
+        }
+
+        .ab-edit {
+            background: rgba(124, 77, 255, .12);
+            color: #b388ff
+        }
+
+        .ab-edit:hover {
+            background: var(--a2);
+            color: #fff
+        }
+
+        .ab-ins {
+            background: rgba(255, 202, 40, .1);
+            color: var(--yw)
+        }
+
+        .ab-ins:hover {
+            background: rgba(255, 202, 40, .3)
+        }
+
+        /* Empty state */
+        .empty {
+            padding: 44px 18px;
+            text-align: center;
+            color: var(--mt)
+        }
+
+        .empty-ic {
+            font-size: 2.6rem;
+            margin-bottom: 9px
+        }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 17px;
+            border-radius: 9px;
+            font-size: .84rem;
+            font-weight: 600;
+            color: #000;
+            z-index: 9999;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all .3s;
+            pointer-events: none
+        }
+
+        #toast.show {
+            transform: translateY(0);
+            opacity: 1
+        }
+
+        /* Modals */
+        .mo {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .72);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px)
+        }
+
+        .mo.open {
+            display: flex
+        }
+
+        .mc {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: 15px;
+            padding: 24px;
+            max-width: 410px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .6)
+        }
+
+        .mc h3 {
+            font-size: .93rem;
+            font-weight: 700;
+            margin-bottom: 7px
+        }
+
+        .mc p {
+            color: var(--mt);
+            font-size: .84rem;
+            margin-bottom: 17px
+        }
+
+        .mact {
+            display: flex;
+            gap: 9px;
+            justify-content: flex-end
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg)
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--bd);
+            border-radius: 3px
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="site-title">🏈 PBP Creator</div>
+        <div class="hdr-acts">
+            <button class="btn btn-s" onclick="openNewGameModal()">＋ New Game</button>
+            <button class="btn btn-sv" onclick="saveAsHTML()">💾 Save as HTML</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Scoreboard -->
+        <div class="sb">
+            <div class="sb-inner">
+                <table class="sb-tbl">
+                    <thead>
+                        <tr>
+                            <th class="team-th">TEAM</th>
+                            <th>Q1</th>
+                            <th>Q2</th>
+                            <th>Q3</th>
+                            <th>Q4</th>
+                            <th>OT</th>
+                            <th>T</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input class="tn-inp" id="awayName" maxlength="20" placeholder="AWAY"
+                                    oninput="saveGame();updatePossOpts()" /><input class="tc-inp" id="awayCity"
+                                    maxlength="24" placeholder="City" oninput="saveGame()" /></td>
+                            <td><input class="qs-inp" id="aq0" type="number" min="0" max="99" value="0"
+                                    oninput="saveGame()" /></td>
+                            <td><input class="qs-inp" id="aq1" type="number" min="0" max="99" value="0"
+                                    oninput="saveGame()" /></td>
+                            <td><input class="qs-inp" id="aq2" type="number" min="0" max="99" value="0"
+                                    oninput="saveGame()" /></td>
+                            <td><input class="qs-inp" id="aq3" type="number" min="0" max="99" value="0"
+                                    oninput="saveGame()" /></td>
+                            <td><input class="qs-inp" id="aq4" type="number" min="0" max="99" value="0"
+                                    oninput="saveGame()" /></td>
+                            <td><input class="tot-inp" id="awayTotal" type="number" min="0" max="199" value="0"
+                                    oninput="saveGame()" /></td>
+                        </tr>
+                        <tr>
+                            <td><input class="tn-inp" id="homeName" maxlength="20" placeholder="HOME"
+                                    oninput="saveGame();updatePossOpts()" /><input class="tc-inp" id="homeCity"
+                                    maxlength="24" placeholder="City" oninput="saveGame()" /></td>
+                            <td><input class="qs-inp" id="hq0" type="number" min="0" max="99" value="0"
+                                    oninput="saveGame()" /></td>
+                            <td><input class="qs-inp" id="hq1" type="number" min="0" max="99" value="0"
+                                    oninput="saveGame()" /></td>
+                            <td><input class="qs-inp" id="hq2" type="number" min="0" max="99" value="0"
+                                    oninput="saveGame()" /></td>
+                            <td><input class="qs-inp" id="hq3" type="number" min="0" max="99" value="0"
+                                    oninput="saveGame()" /></td>
+                            <td><input class="qs-inp" id="hq4" type="number" min="0" max="99" value="0"
+                                    oninput="saveGame()" /></td>
+                            <td><input class="tot-inp home-tot" id="homeTotal" type="number" min="0" max="199" value="0"
+                                    oninput="saveGame()" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="two-col">
+            <div>
+                <div class="pbp-wrap">
+                    <div class="pbp-hdr">
+                        <span class="pbp-title">PLAY BY PLAY</span>
+                        <span class="pbp-cnt" id="pbpCount">0 plays</span>
+                    </div>
+                    <div id="pbpList"></div>
+                </div>
+            </div>
+            <div>
+                <div class="ctrl-card">
+                    <div class="q-row">
+                        <span class="q-lbl">追加先Q</span>
+                        <div class="q-btns">
+                            <button class="q-btn active" onclick="setQ(1)" id="qb1">Q1</button>
+                            <button class="q-btn" onclick="setQ(2)" id="qb2">Q2</button>
+                            <button class="q-btn" onclick="setQ(3)" id="qb3">Q3</button>
+                            <button class="q-btn" onclick="setQ(4)" id="qb4">Q4</button>
+                            <button class="q-btn" onclick="setQ(5)" id="qb5">OT</button>
+                        </div>
+                    </div>
+                    <div class="sit-row">
+                        <div class="mi-w"><span class="mi-l">Time</span><input class="mi-i" id="inp_time"
+                                placeholder="15:00" maxlength="6" /></div>
+                        <div class="mi-w"><span class="mi-l">Down</span><input class="mi-i" id="inp_down"
+                                placeholder="1st" maxlength="6" /></div>
+                        <div class="mi-w"><span class="mi-l">Distance</span><input class="mi-i" id="inp_dist"
+                                placeholder="10" maxlength="6" /></div>
+                        <div class="mi-w"><span class="mi-l">Ball at</span><input class="mi-i" id="inp_yardline"
+                                placeholder="NYJ 35" maxlength="8" /></div>
+                    </div>
+                </div>
+                <div class="form-card">
+                    <div class="fm-title" id="fmTitle">＋ Add Play</div>
+                    <div class="fg"><label class="fl">ポゼッション</label>
+                        <select class="fs" id="frm_poss">
+                            <option value="">-- チームを選択 --</option>
+                            <option value="away">AWAY</option>
+                            <option value="home">HOME</option>
+                        </select>
+                    </div>
+                    <div class="fg"><label class="fl">プレイタイプ</label>
+                        <select class="fs" id="frm_type">
+                            <option value="pass">🎯 Pass</option>
+                            <option value="inc">❌ Pass Incomplete</option>
+                            <option value="rush">🏃 Rush</option>
+                            <option value="td">🏆 Touchdown</option>
+                            <option value="xp">✅ Extra Point</option>
+                            <option value="fg">🎯 Field Goal</option>
+                            <option value="punt">👟 Punt</option>
+                            <option value="kick">🦶 Kickoff</option>
+                            <option value="turnover">🔄 Turnover</option>
+                            <option value="penalty">🚩 Penalty</option>
+                            <option value="timeout">⏱ Timeout</option>
+                            <option value="other">📋 Other</option>
+                        </select>
+                    </div>
+                    <div class="fg"><label class="fl">説明文</label><textarea class="fta" id="frm_desc"
+                            placeholder="例: Brady passes to Gronkowski for 12 yards."></textarea></div>
+                    <div class="fg"><label class="fl">スコア更新（任意）</label><input class="fi" id="frm_score"
+                            placeholder="例: KC 7 – PHI 0" maxlength="30" /></div>
+                    <button class="btn btn-p" style="width:100%;justify-content:center;margin-bottom:7px"
+                        onclick="submitPlay()" id="submitBtn">＋ プレイを追加</button>
+                    <button class="btn btn-s" style="width:100%;justify-content:center;display:none;margin-bottom:7px"
+                        onclick="cancelEdit()" id="cancelBtn">キャンセル</button>
+                    <button class="btn btn-w" style="width:100%;justify-content:center" onclick="endDrive()">🏁
+                        ドライブ終了</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="mo" id="newGameMo">
+        <div class="mc">
+            <h3>⚠️ New Game</h3>
+            <p>すべてのデータをリセットします。先に保存することをお勧めします。</p>
+            <div class="mact"><button class="btn btn-s" onclick="closeMo('newGameMo')">キャンセル</button><button
+                    class="btn btn-d" onclick="confirmNew()">リセット</button></div>
+        </div>
+    </div>
+    <div class="mo" id="delMo">
+        <div class="mc">
+            <h3>🗑 削除しますか？</h3>
+            <p id="delDesc"></p>
+            <div class="mact"><button class="btn btn-s" onclick="closeMo('delMo')">キャンセル</button><button
+                    class="btn btn-d" onclick="confirmDel()">削除する</button></div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+    <script src="pbp.js"></script>
+</body>
+
+</html>
