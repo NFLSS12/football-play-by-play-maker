@@ -3,16 +3,17 @@
 const SK = 'pbp_creator_v3';
 const NP = new Set(['punt', 'kick', 'penalty', 'timeout', 'xp']);
 const QL = ['', 'Q1', 'Q2', 'Q3', 'Q4', 'OT'];
-const TL = { pass: 'PASS', inc: 'INCOMPLETE', rush: 'RUSH', td: 'TOUCHDOWN', xp: 'EXTRA POINT', fg: 'FIELD GOAL', punt: 'PUNT', kick: 'KICKOFF', turnover: 'TURNOVER', penalty: 'PENALTY', timeout: 'TIMEOUT', other: 'OTHER' };
+const TL = { pass: 'PASS', inc: 'INCOMPLETE', sack: 'SACK', rush: 'RUSH', td: 'TOUCHDOWN', xp: 'EXTRA POINT', fg: 'FIELD GOAL', punt: 'PUNT', kick: 'KICKOFF', turnover: 'TURNOVER', penalty: 'PENALTY', timeout: 'TIMEOUT', other: 'OTHER' };
 
 // State
 let state = {
     awayName: '', awayCity: '', homeName: '', homeCity: '',
     quarterScores: { away: [0, 0, 0, 0, 0], home: [0, 0, 0, 0, 0] },
     awayTotal: 0, homeTotal: 0,
+    gameTime: '', gameVenue: '', gameName: '', gameWeather: '',
     activeQ: 1, currentDriveId: 1,
-    drives: {},   // { [id]: { team:'', result:'', yards:'', driveTime:'', score:'', collapsed:false } }
-    plays: [],    // { id, driveId, quarter, time, down, dist, yardline, team, type, desc, scoreUpdate }
+    drives: {},
+    plays: [],
     highlightedPlayIds: []
 };
 
@@ -28,6 +29,10 @@ function saveGame() {
     state.homeName = _v('homeName'); state.homeCity = _v('homeCity');
     state.awayTotal = parseInt(_v('awayTotal')) || 0;
     state.homeTotal = parseInt(_v('homeTotal')) || 0;
+    state.gameTime = _v('gameTime');
+    state.gameVenue = _v('gameVenue');
+    state.gameName = _v('gameName');
+    state.gameWeather = _v('gameWeather');
     ['away', 'home'].forEach((t, ti) => {
         const p = ti === 0 ? 'a' : 'h';
         state.quarterScores[t] = [0, 1, 2, 3, 4].map(i => parseInt(_v(p + 'q' + i)) || 0);
@@ -44,6 +49,10 @@ function syncUI() {
     document.getElementById('homeCity').value = state.homeCity;
     document.getElementById('awayTotal').value = state.awayTotal;
     document.getElementById('homeTotal').value = state.homeTotal;
+    document.getElementById('gameTime').value = state.gameTime || '';
+    document.getElementById('gameVenue').value = state.gameVenue || '';
+    document.getElementById('gameName').value = state.gameName || '';
+    document.getElementById('gameWeather').value = state.gameWeather || '';
     ['away', 'home'].forEach((t, ti) => {
         const p = ti === 0 ? 'a' : 'h';
         state.quarterScores[t].forEach((v, i) => { document.getElementById(p + 'q' + i).value = v; });
@@ -286,7 +295,13 @@ function renderDrivePlays(dPlays, driveNum, isCurrent) {
 function openNewGameModal() { document.getElementById('newGameMo').classList.add('open'); }
 function closeMo(id) { document.getElementById(id).classList.remove('open'); }
 function confirmNew() {
-    state = { awayName: '', awayCity: '', homeName: '', homeCity: '', quarterScores: { away: [0, 0, 0, 0, 0], home: [0, 0, 0, 0, 0] }, awayTotal: 0, homeTotal: 0, activeQ: 1, currentDriveId: 1, drives: {}, plays: [], highlightedPlayIds: [] };
+    state = {
+        awayName: '', awayCity: '', homeName: '', homeCity: '',
+        quarterScores: { away: [0, 0, 0, 0, 0], home: [0, 0, 0, 0, 0] },
+        awayTotal: 0, homeTotal: 0,
+        gameTime: '', gameVenue: '', gameName: '', gameWeather: '',
+        activeQ: 1, currentDriveId: 1, drives: {}, plays: [], highlightedPlayIds: []
+    };
     persist(); syncUI(); closeMo('newGameMo'); toast('🆕 新しいゲームを開始しました');
 }
 
@@ -298,7 +313,7 @@ function saveAsHTML() {
     function se(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
     function tl(k) { return k === 'away' ? away : k === 'home' ? home : ''; }
     function tc(k) { return k === 'home' ? '#7c4dff' : '#00d4ff'; }
-    const tcMap = { pass: 'rgba(0,212,255,.15);color:#00d4ff', inc: 'rgba(255,68,68,.15);color:#ff4444', rush: 'rgba(0,230,118,.12);color:#00e676', td: 'rgba(255,202,40,.15);color:#ffca28', xp: 'rgba(255,202,40,.08);color:#e0ac00', fg: 'rgba(124,77,255,.18);color:#b388ff', punt: 'rgba(107,114,128,.2);color:#6b7280', kick: 'rgba(107,114,128,.2);color:#6b7280', turnover: 'rgba(255,68,68,.18);color:#ff8a80', penalty: 'rgba(255,68,68,.12);color:#ff4444', timeout: 'rgba(255,202,40,.1);color:#ffca28', other: 'rgba(107,114,128,.15);color:#6b7280' };
+    const tcMap = { pass: 'rgba(0,212,255,.15);color:#00d4ff', inc: 'rgba(255,68,68,.15);color:#ff4444', sack: 'rgba(255,111,0,.15);color:#ff6f00', rush: 'rgba(0,230,118,.12);color:#00e676', td: 'rgba(255,202,40,.15);color:#ffca28', xp: 'rgba(255,202,40,.08);color:#e0ac00', fg: 'rgba(124,77,255,.18);color:#b388ff', punt: 'rgba(107,114,128,.2);color:#6b7280', kick: 'rgba(107,114,128,.2);color:#6b7280', turnover: 'rgba(255,68,68,.18);color:#ff8a80', penalty: 'rgba(255,68,68,.12);color:#ff4444', timeout: 'rgba(255,202,40,.1);color:#ffca28', other: 'rgba(107,114,128,.15);color:#6b7280' };
 
     const driveOrder = [], driveMap = {};
     state.plays.forEach(p => { const d = p.driveId || 1; if (!driveMap[d]) { driveMap[d] = []; driveOrder.push(d); } driveMap[d].push(p); });
@@ -370,6 +385,7 @@ function saveAsHTML() {
           <tr><td style="padding:5px 7px"><div style="font-size:.9rem;font-weight:800;text-transform:uppercase;letter-spacing:1px">${se(home)}</div><div style="font-size:.68rem;color:#6b7280">${se(state.homeCity)}</div></td>${qRow(hqs)}<td style="text-align:center;padding:5px 10px;font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:#7c4dff">${state.homeTotal}</td></tr>
         </tbody>
       </table>
+      ${(state.gameTime || state.gameVenue || state.gameName || state.gameWeather) ? `<div style="display:flex;flex-wrap:wrap;gap:8px 18px;padding:10px 14px 12px;border-top:1px solid rgba(42,47,69,.5);margin-top:8px">${state.gameTime ? `<span style="font-size:.75rem;color:#9ca3af">🕐 <span style="color:#e8eaf6">${se(state.gameTime)}</span></span>` : ''} ${state.gameVenue ? `<span style="font-size:.75rem;color:#9ca3af">🏟 <span style="color:#e8eaf6">${se(state.gameVenue)}</span></span>` : ''} ${state.gameName ? `<span style="font-size:.75rem;color:#9ca3af">🏆 <span style="color:#e8eaf6">${se(state.gameName)}</span></span>` : ''} ${state.gameWeather ? `<span style="font-size:.75rem;color:#9ca3af">🌤 <span style="color:#e8eaf6">${se(state.gameWeather)}</span></span>` : ''}</div>` : ''}
     </div>
   </div>
   <div style="background:#151820;border:1px solid #2a2f45;border-radius:12px;overflow:hidden">
