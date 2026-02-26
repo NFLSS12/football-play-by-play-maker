@@ -173,6 +173,46 @@
             .form-card {
                 position: static
             }
+
+            /* Scoreboard horizontal scroll on mobile */
+            .sb {
+                overflow: visible
+            }
+
+            .sb-inner {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                /* gi-row を table の上に移動 */
+                display: flex;
+                flex-direction: column
+            }
+
+            .sb-tbl {
+                min-width: 340px;
+                order: 1
+            }
+
+            /* gi-row を先頭へ、コンパクト化 */
+            .gi-row {
+                order: 0;
+                margin-top: 0;
+                border-top: none;
+                border-bottom: 1px solid rgba(42, 47, 69, .4);
+                padding: 7px 10px 8px;
+                gap: 6px 12px
+            }
+
+            .gi-item {
+                min-width: 0
+            }
+
+            .gi-lbl {
+                font-size: .58rem
+            }
+
+            .gi-inp {
+                font-size: .74rem
+            }
         }
 
         /* Controls card (Q selector + situation) */
@@ -283,6 +323,53 @@
 
         .qs-inp:focus {
             border-color: var(--ac)
+        }
+
+        /* Game info row */
+        .gi-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 20px;
+            padding: 12px 18px 14px;
+            border-top: 1px solid rgba(42, 47, 69, .5);
+            margin-top: 10px
+        }
+
+        .gi-item {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 120px
+        }
+
+        .gi-lbl {
+            font-size: .65rem;
+            color: var(--mt);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .8px
+        }
+
+        .gi-inp {
+            background: 0;
+            border: none;
+            border-bottom: 1px solid var(--bd);
+            color: var(--tx);
+            font-family: 'Inter', sans-serif;
+            font-size: .84rem;
+            padding: 3px 2px;
+            outline: none;
+            transition: border-color .15s;
+            width: 100%
+        }
+
+        .gi-inp:focus {
+            border-color: var(--ac)
+        }
+
+        .gi-inp::placeholder {
+            color: #38415a;
+            font-size: .78rem
         }
 
         .tot-inp {
@@ -811,6 +898,11 @@
             color: var(--rd)
         }
 
+        .tg-sack {
+            background: rgba(255, 111, 0, .15);
+            color: #ff6f00
+        }
+
         .tg-rush {
             background: rgba(0, 230, 118, .12);
             color: var(--gn)
@@ -1067,6 +1159,17 @@
                         </tr>
                     </tbody>
                 </table>
+                <!-- Game Info Row -->
+                <div class="gi-row">
+                    <div class="gi-item"><span class="gi-lbl">  日時</span><input class="gi-inp" id="gameTime"
+                            placeholder="例: Feb 9 2025, 6:30 PM ET" maxlength="30" oninput="saveGame()" /></div>
+                    <div class="gi-item"><span class="gi-lbl">🏟 会場</span><input class="gi-inp" id="gameVenue"
+                            placeholder="例: Arrowhead Stadium" maxlength="40" oninput="saveGame()" /></div>
+                    <div class="gi-item"><span class="gi-lbl">🏆 大会名</span><input class="gi-inp" id="gameName"
+                            placeholder="例: Super Bowl LX" maxlength="40" oninput="saveGame()" /></div>
+                    <div class="gi-item"><span class="gi-lbl">🌤 天候</span><input class="gi-inp" id="gameWeather"
+                            placeholder="例: 72°F, Clear" maxlength="30" oninput="saveGame()" /></div>
+                </div>
             </div>
         </div>
 
@@ -1123,6 +1226,7 @@
                             <option value="punt">👟 Punt</option>
                             <option value="kick">🦶 Kickoff</option>
                             <option value="turnover">🔄 Turnover</option>
+                            <option value="sack">💥 Sack</option>
                             <option value="penalty">🚩 Penalty</option>
                             <option value="timeout">⏱ Timeout</option>
                             <option value="other">📋 Other</option>
