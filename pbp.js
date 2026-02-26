@@ -122,7 +122,7 @@ function startEdit(id) {
     setFormMode('✏️ Edit Play', '✅ プレイを更新', true);
     renderPBP(); document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-function cancelEdit() { editingPlayId = null; clearForm(); setFormMode('＋ Add Play', '＋ プレイを追加', false); renderPBP(); }
+function cancelEdit() { editingPlayId = null; insertAfterPlayId = null; clearForm(); setFormMode('＋ Add Play', '＋ プレイを追加', false); renderPBP(); }
 
 /* ─── Insert After mode ──────────────────── */
 function startInsertAfter(id) {
