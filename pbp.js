@@ -312,8 +312,8 @@ function saveAsHTML() {
     const hlIds = state.highlightedPlayIds;
     function se(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
     function tl(k) { return k === 'away' ? away : k === 'home' ? home : ''; }
-    function tc(k) { return k === 'home' ? '#7c4dff' : '#00d4ff'; }
-    const tcMap = { pass: 'rgba(0,212,255,.15);color:#00d4ff', inc: 'rgba(255,68,68,.15);color:#ff4444', sack: 'rgba(255,111,0,.15);color:#ff6f00', rush: 'rgba(0,230,118,.12);color:#00e676', td: 'rgba(255,202,40,.15);color:#ffca28', xp: 'rgba(255,202,40,.08);color:#e0ac00', fg: 'rgba(124,77,255,.18);color:#b388ff', punt: 'rgba(107,114,128,.2);color:#6b7280', kick: 'rgba(107,114,128,.2);color:#6b7280', turnover: 'rgba(255,68,68,.18);color:#ff8a80', penalty: 'rgba(255,68,68,.12);color:#ff4444', timeout: 'rgba(255,202,40,.1);color:#ffca28', other: 'rgba(107,114,128,.15);color:#6b7280' };
+    function tc(k) { return k === 'home' ? '#6d3fd4' : '#0090c8'; }
+    const tcMap = {pass:'rgba(0,144,200,.14);color:#0090c8',inc:'rgba(229,62,62,.14);color:#e53e3e',sack:'rgba(220,90,0,.14);color:#c05500',rush:'rgba(22,163,74,.14);color:#16a34a',td:'rgba(217,119,6,.18);color:#d97706',xp:'rgba(217,119,6,.10);color:#a06010',fg:'rgba(109,63,212,.14);color:#6d3fd4',punt:'rgba(100,116,139,.15);color:#64748b',kick:'rgba(100,116,139,.15);color:#64748b',turnover:'rgba(229,62,62,.18);color:#b91c1c',penalty:'rgba(229,62,62,.12);color:#e53e3e',timeout:'rgba(217,119,6,.12);color:#d97706',other:'rgba(100,116,139,.12);color:#64748b'};
 
     const driveOrder = [], driveMap = {};
     state.plays.forEach(p => { const d = p.driveId || 1; if (!driveMap[d]) { driveMap[d] = []; driveOrder.push(d); } driveMap[d].push(p); });
@@ -353,45 +353,45 @@ function saveAsHTML() {
             <div style="font-size:.66rem;color:#6b7280;margin-top:2px">${se(sit) || '—'}</div>${badge}
           </div>
           <div>
-            <span style="display:inline-block;font-size:.63rem;font-weight:700;padding:2px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.5px;background:${tcMap[tKey] || tcMap.other};margin-bottom:4px">${TL[tKey] || tKey.toUpperCase()}</span>
-            <div style="font-size:.84rem;line-height:1.55;color:#e8eaf6">${se(p.desc)}</div>${scoreRow}
+            <span style="display:inline-block;font-size:.63rem;font-weight:700;padding:2px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.5px;background:${tcMap[tKey]||tcMap.other};margin-bottom:4px">${TL[tKey]||tKey.toUpperCase()}</span>
+            <div style="font-size:.84rem;line-height:1.55;color:#1e293b">${se(p.desc)}</div>${scoreRow}
           </div>
         </div>`;
             });
         });
     }
 
-    const qRow = (qs) => qs.map(v => `<td style="text-align:center;padding:5px 7px;border-bottom:1px solid #2a2f45">${v}</td>`).join('');
+    const qRow = (qs) => qs.map(v => `<td style="text-align:center;padding:5px 7px;border-bottom:1px solid #d1d9e6">${v}</td>`).join('');
     const fn = `pbp_${away}_vs_${home}_${new Date().toISOString().slice(0, 10)}.html`.replace(/[^a-zA-Z0-9_.\-]/g, '_');
     const doc = `<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>🏈 ${se(away)} vs ${se(home)} – Play by Play</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Orbitron:wght@700&display=swap" rel="stylesheet"/>
-<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter',sans-serif;background:#0d0f14;color:#e8eaf6;min-height:100vh;padding-bottom:40px}</style>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter',sans-serif;background:#f5f7fb;color:#1e293b;min-height:100vh;padding-bottom:40px}</style>
 </head><body>
-<div style="background:linear-gradient(135deg,#0d0f14,#151a2e);border-bottom:1px solid #2a2f45;padding:13px 18px;display:flex;align-items:center;gap:10px">
-  <span style="font-family:'Orbitron',sans-serif;font-size:1rem;color:#00d4ff;letter-spacing:2px">🏈 PBP Creator</span>
-  <span style="font-size:.72rem;color:#6b7280">Saved ${new Date().toLocaleString('ja-JP')}</span>
+<div style="background:linear-gradient(135deg,#fff,#f0f4ff);border-bottom:1px solid #d1d9e6;padding:13px 18px;display:flex;align-items:center;gap:10px;box-shadow:0 1px 6px rgba(0,0,0,.06)">
+  <span style="font-family:'Orbitron',sans-serif;font-size:1rem;color:#0090c8;letter-spacing:2px">🏈 PBP Creator</span>
+  <span style="font-size:.72rem;color:#64748b">Saved ${new Date().toLocaleString('ja-JP')}</span>
 </div>
 <div style="max-width:860px;margin:20px auto;padding:0 14px">
-  <div style="background:#151820;border:1px solid #2a2f45;border-radius:12px;overflow:hidden;margin-bottom:16px">
-    <div style="background:linear-gradient(135deg,#1a2040,#0d1428);padding:13px 17px">
+  <div style="background:#fff;border:1px solid #d1d9e6;border-radius:12px;overflow:hidden;margin-bottom:16px">
+    <div style="background:linear-gradient(135deg,#eef4ff,#f0f7ff);padding:13px 17px">
       <table style="width:100%;border-collapse:collapse;font-family:'Inter',sans-serif">
-        <thead><tr style="font-size:.67rem;font-weight:700;color:#6b7280;text-transform:uppercase">
-          <th style="text-align:left;padding:4px 7px;border-bottom:1px solid #2a2f45;min-width:110px">TEAM</th>
-          <th style="padding:4px 7px;border-bottom:1px solid #2a2f45">Q1</th><th style="padding:4px 7px;border-bottom:1px solid #2a2f45">Q2</th><th style="padding:4px 7px;border-bottom:1px solid #2a2f45">Q3</th><th style="padding:4px 7px;border-bottom:1px solid #2a2f45">Q4</th><th style="padding:4px 7px;border-bottom:1px solid #2a2f45">OT</th><th style="padding:4px 7px;border-bottom:1px solid #2a2f45">T</th>
+        <thead><tr style="font-size:.67rem;font-weight:700;color:#64748b;text-transform:uppercase">
+          <th style="text-align:left;padding:4px 7px;border-bottom:1px solid #d1d9e6;min-width:110px">TEAM</th>
+          <th style="padding:4px 7px;border-bottom:1px solid #d1d9e6">Q1</th><th style="padding:4px 7px;border-bottom:1px solid #d1d9e6">Q2</th><th style="padding:4px 7px;border-bottom:1px solid #d1d9e6">Q3</th><th style="padding:4px 7px;border-bottom:1px solid #d1d9e6">Q4</th><th style="padding:4px 7px;border-bottom:1px solid #d1d9e6">OT</th><th style="padding:4px 7px;border-bottom:1px solid #d1d9e6">T</th>
         </tr></thead>
         <tbody>
-          <tr><td style="padding:5px 7px"><div style="font-size:.9rem;font-weight:800;text-transform:uppercase;letter-spacing:1px">${se(away)}</div><div style="font-size:.68rem;color:#6b7280">${se(state.awayCity)}</div></td>${qRow(aqs)}<td style="text-align:center;padding:5px 10px;font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:#00d4ff">${state.awayTotal}</td></tr>
-          <tr><td style="padding:5px 7px"><div style="font-size:.9rem;font-weight:800;text-transform:uppercase;letter-spacing:1px">${se(home)}</div><div style="font-size:.68rem;color:#6b7280">${se(state.homeCity)}</div></td>${qRow(hqs)}<td style="text-align:center;padding:5px 10px;font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:#7c4dff">${state.homeTotal}</td></tr>
+          <tr><td style="padding:5px 7px"><div style="font-size:.9rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#1e293b">${se(away)}</div><div style="font-size:.68rem;color:#64748b">${se(state.awayCity)}</div></td>${qRow(aqs)}<td style="text-align:center;padding:5px 10px;font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:#0090c8">${state.awayTotal}</td></tr>
+          <tr><td style="padding:5px 7px"><div style="font-size:.9rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#1e293b">${se(home)}</div><div style="font-size:.68rem;color:#64748b">${se(state.homeCity)}</div></td>${qRow(hqs)}<td style="text-align:center;padding:5px 10px;font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:#6d3fd4">${state.homeTotal}</td></tr>
         </tbody>
       </table>
-      ${(state.gameTime || state.gameVenue || state.gameName || state.gameWeather) ? `<div style="display:flex;flex-wrap:wrap;gap:8px 18px;padding:10px 14px 12px;border-top:1px solid rgba(42,47,69,.5);margin-top:8px">${state.gameTime ? `<span style="font-size:.75rem;color:#9ca3af">🕐 <span style="color:#e8eaf6">${se(state.gameTime)}</span></span>` : ''} ${state.gameVenue ? `<span style="font-size:.75rem;color:#9ca3af">🏟 <span style="color:#e8eaf6">${se(state.gameVenue)}</span></span>` : ''} ${state.gameName ? `<span style="font-size:.75rem;color:#9ca3af">🏆 <span style="color:#e8eaf6">${se(state.gameName)}</span></span>` : ''} ${state.gameWeather ? `<span style="font-size:.75rem;color:#9ca3af">🌤 <span style="color:#e8eaf6">${se(state.gameWeather)}</span></span>` : ''}</div>` : ''}
+      ${(state.gameTime||state.gameVenue||state.gameName||state.gameWeather)?`<div style="display:flex;flex-wrap:wrap;gap:8px 18px;padding:10px 14px 12px;border-top:1px solid #d1d9e6;margin-top:8px">${state.gameTime?`<span style="font-size:.75rem;color:#64748b">🗓 <span style="color:#1e293b">${se(state.gameTime)}</span></span>`:''} ${state.gameVenue?`<span style="font-size:.75rem;color:#64748b">🏟 <span style="color:#1e293b">${se(state.gameVenue)}</span></span>`:''} ${state.gameName?`<span style="font-size:.75rem;color:#64748b">🏆 <span style="color:#1e293b">${se(state.gameName)}</span></span>`:''} ${state.gameWeather?`<span style="font-size:.75rem;color:#64748b">🌤 <span style="color:#1e293b">${se(state.gameWeather)}</span></span>`:''}</div>`:""}
     </div>
   </div>
-  <div style="background:#151820;border:1px solid #2a2f45;border-radius:12px;overflow:hidden">
-    <div style="padding:11px 16px;background:#1c2030;border-bottom:1px solid #2a2f45;display:flex;align-items:center;justify-content:space-between">
-      <span style="font-size:.86rem;font-weight:700;letter-spacing:.5px">PLAY BY PLAY</span>
-      <span style="font-size:.72rem;color:#6b7280;background:#0d0f14;padding:2px 8px;border-radius:20px">${state.plays.filter(p => !NP.has(p.type)).length} plays</span>
+  <div style="background:#fff;border:1px solid #d1d9e6;border-radius:12px;overflow:hidden">
+    <div style="padding:11px 16px;background:#eef2f8;border-bottom:1px solid #d1d9e6;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:.86rem;font-weight:700;letter-spacing:.5px;color:#1e293b">PLAY BY PLAY</span>
+      <span style="font-size:.72rem;color:#64748b;background:#f5f7fb;padding:2px 8px;border-radius:20px">${state.plays.filter(p=>!NP.has(p.type)).length} plays</span>
     </div>
     ${playsHTML}
   </div>
