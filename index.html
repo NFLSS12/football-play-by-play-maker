@@ -19,17 +19,17 @@
         }
 
         :root {
-            --bg: #0d0f14;
-            --sf: #151820;
-            --cd: #1c2030;
-            --bd: #2a2f45;
-            --ac: #00d4ff;
-            --a2: #7c4dff;
-            --gn: #00e676;
-            --rd: #ff4444;
-            --yw: #ffca28;
-            --tx: #e8eaf6;
-            --mt: #6b7280;
+            --bg: #f5f7fb;
+            --sf: #ffffff;
+            --cd: #eef2f8;
+            --bd: #d1d9e6;
+            --ac: #0090c8;
+            --a2: #6d3fd4;
+            --gn: #16a34a;
+            --rd: #e53e3e;
+            --yw: #d97706;
+            --tx: #1e293b;
+            --mt: #64748b;
             --r: 12px
         }
 
@@ -46,7 +46,7 @@
 
         /* Header */
         .site-header {
-            background: linear-gradient(135deg, #0d0f14, #151a2e);
+            background: linear-gradient(135deg, #ffffff, #f0f4ff);
             border-bottom: 1px solid var(--bd);
             padding: 13px 18px;
             display: flex;
@@ -56,7 +56,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            backdrop-filter: blur(12px)
+            box-shadow: 0 1px 8px rgba(0,0,0,.06)
         }
 
         .site-title {
@@ -64,7 +64,7 @@
             font-size: 1.05rem;
             color: var(--ac);
             letter-spacing: 2px;
-            text-shadow: 0 0 18px rgba(0, 212, 255, .4)
+            text-shadow: 0 0 14px rgba(0, 144, 200, .3)
         }
 
         .hdr-acts {
@@ -197,7 +197,7 @@
                 order: 0;
                 margin-top: 0;
                 border-top: none;
-                border-bottom: 1px solid rgba(42, 47, 69, .4);
+                border-bottom: 1px solid var(--bd);
                 padding: 7px 10px 8px;
                 gap: 6px 12px
             }
@@ -239,7 +239,7 @@
 
         .sb-inner {
             padding: 14px 18px;
-            background: linear-gradient(135deg, #1a2040, #0d1428)
+            background: linear-gradient(135deg, #eef4ff, #f0f7ff)
         }
 
         .sb-tbl {
@@ -267,7 +267,7 @@
         .sb-tbl td {
             padding: 5px 7px;
             text-align: center;
-            border-bottom: 1px solid rgba(42, 47, 69, .4)
+            border-bottom: 1px solid var(--bd)
         }
 
         .sb-tbl tr:last-child td {
@@ -759,7 +759,7 @@
         /* Play item */
         .play-item {
             padding: 11px 14px;
-            border-bottom: 1px solid rgba(42, 47, 69, .5);
+            border-bottom: 1px solid var(--bd);
             display: grid;
             grid-template-columns: 30px 82px 1fr 72px;
             gap: 9px;
@@ -769,22 +769,22 @@
         }
 
         .play-item:hover {
-            background: rgba(255, 255, 255, .02)
+            background: rgba(0, 0, 0, .03)
         }
 
         .play-item.hl {
-            background: rgba(0, 212, 255, .07);
+            background: rgba(0, 144, 200, .10);
             border-left: 3px solid var(--ac);
-            box-shadow: inset 4px 0 14px rgba(0, 212, 255, .09)
+            box-shadow: inset 4px 0 14px rgba(0, 144, 200, .08)
         }
 
         .play-item.editing {
-            background: rgba(124, 77, 255, .06);
+            background: rgba(109, 63, 212, .08);
             border-left: 3px solid var(--a2)
         }
 
         .play-item.inserting {
-            background: rgba(255, 202, 40, .04);
+            background: rgba(217, 119, 6, .08);
             border-left: 3px solid var(--yw)
         }
 
@@ -888,66 +888,19 @@
         }
 
         /* Tag colors */
-        .tg-pass {
-            background: rgba(0, 212, 255, .15);
-            color: var(--ac)
-        }
-
-        .tg-inc {
-            background: rgba(255, 68, 68, .15);
-            color: var(--rd)
-        }
-
-        .tg-sack {
-            background: rgba(255, 111, 0, .15);
-            color: #ff6f00
-        }
-
-        .tg-rush {
-            background: rgba(0, 230, 118, .12);
-            color: var(--gn)
-        }
-
-        .tg-td {
-            background: rgba(255, 202, 40, .15);
-            color: var(--yw)
-        }
-
-        .tg-xp {
-            background: rgba(255, 202, 40, .08);
-            color: #e0ac00
-        }
-
-        .tg-fg {
-            background: rgba(124, 77, 255, .18);
-            color: #b388ff
-        }
-
+        .tg-pass    { background: rgba(0, 144, 200, .14); color: var(--ac) }
+        .tg-inc     { background: rgba(229, 62, 62, .14); color: var(--rd) }
+        .tg-sack    { background: rgba(220, 90, 0, .14);  color: #c05500 }
+        .tg-rush    { background: rgba(22, 163, 74, .14);  color: var(--gn) }
+        .tg-td      { background: rgba(217, 119, 6, .18);  color: var(--yw) }
+        .tg-xp      { background: rgba(217, 119, 6, .10);  color: #a06010 }
+        .tg-fg      { background: rgba(109, 63, 212, .14); color: var(--a2) }
         .tg-punt,
-        .tg-kick {
-            background: rgba(107, 114, 128, .2);
-            color: var(--mt)
-        }
-
-        .tg-turnover {
-            background: rgba(255, 68, 68, .18);
-            color: #ff8a80
-        }
-
-        .tg-penalty {
-            background: rgba(255, 68, 68, .12);
-            color: var(--rd)
-        }
-
-        .tg-timeout {
-            background: rgba(255, 202, 40, .1);
-            color: var(--yw)
-        }
-
-        .tg-other {
-            background: rgba(107, 114, 128, .15);
-            color: var(--mt)
-        }
+        .tg-kick    { background: rgba(100, 116, 139, .15); color: var(--mt) }
+        .tg-turnover{ background: rgba(229, 62, 62, .18);  color: #b91c1c }
+        .tg-penalty { background: rgba(229, 62, 62, .12);  color: var(--rd) }
+        .tg-timeout { background: rgba(217, 119, 6, .12);  color: var(--yw) }
+        .tg-other   { background: rgba(100, 116, 139, .12); color: var(--mt) }
 
         /* Action buttons */
         .play-acts {
