@@ -132,6 +132,28 @@
             box-shadow: 0 5px 20px rgba(0, 230, 118, .35)
         }
 
+        .btn-ex {
+            background: linear-gradient(135deg, #0090c8, #005f8f);
+            color: #fff;
+            box-shadow: 0 3px 14px rgba(0, 144, 200, .25)
+        }
+
+        .btn-ex:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 20px rgba(0, 144, 200, .4)
+        }
+
+        .btn-im {
+            background: linear-gradient(135deg, #d97706, #b45309);
+            color: #fff;
+            box-shadow: 0 3px 14px rgba(217, 119, 6, .25)
+        }
+
+        .btn-im:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 20px rgba(217, 119, 6, .4)
+        }
+
         .btn-w {
             background: linear-gradient(135deg, #e65100, #ff6d00);
             color: #fff
@@ -475,6 +497,13 @@
             border-color: var(--ac)
         }
 
+        select.mi-i {
+            cursor: pointer;
+            text-align-last: center;
+            padding-right: 2px;
+            appearance: auto
+        }
+
         /* Form card */
         .form-card {
             background: var(--sf);
@@ -552,7 +581,9 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            max-height: calc(100vh - 140px)
+            max-height: calc(100vh - 140px);
+            position: sticky;
+            top: 74px
         }
 
         .pbp-hdr {
@@ -1055,7 +1086,10 @@
         <div class="site-title">🏈 PBP Creator</div>
         <div class="hdr-acts">
             <button class="btn btn-s" onclick="openNewGameModal()">＋ New Game</button>
-            <button class="btn btn-sv" onclick="saveAsHTML()">💾 Save as HTML</button>
+            <button class="btn btn-im" onclick="importJSON()">📥 JSON読込</button>
+            <button class="btn btn-ex" onclick="exportJSON()">📤 JSON書出</button>
+            <button class="btn btn-sv" onclick="saveAsHTML()">💾 HTML保存</button>
+            <input type="file" id="jsonFileInput" accept=".json" style="display:none" onchange="handleJSONImport(this)" />
         </div>
     </header>
 
@@ -1151,10 +1185,40 @@
                     <div class="sit-row">
                         <div class="mi-w"><span class="mi-l">Time</span><input class="mi-i" id="inp_time"
                                 placeholder="15:00" maxlength="6" /></div>
-                        <div class="mi-w"><span class="mi-l">Down</span><input class="mi-i" id="inp_down"
-                                placeholder="1st" maxlength="6" /></div>
-                        <div class="mi-w"><span class="mi-l">Distance</span><input class="mi-i" id="inp_dist"
-                                placeholder="10" maxlength="6" /></div>
+                        <div class="mi-w"><span class="mi-l">Down</span>
+                            <select class="mi-i" id="inp_down">
+                                <option value="">--</option>
+                                <option value="1st">1st</option>
+                                <option value="2nd">2nd</option>
+                                <option value="3rd">3rd</option>
+                                <option value="4th">4th</option>
+                            </select>
+                        </div>
+                        <div class="mi-w"><span class="mi-l">Distance</span>
+                            <select class="mi-i" id="inp_dist" style="width:90px">
+                                <option value="">--</option>
+                                <option value="10">10</option>
+                                <option value="Short">Short</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Long">Long</option>
+                                <option disabled>──────</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                            </select>
+                        </div>
                         <div class="mi-w"><span class="mi-l">Ball at</span><input class="mi-i" id="inp_yardline"
                                 placeholder="NYJ 35" maxlength="8" /></div>
                     </div>
