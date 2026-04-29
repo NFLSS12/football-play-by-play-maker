@@ -100,6 +100,12 @@ function submitPlay() {
         toast('✅ プレイを追加しました');
     }
     clearForm(); persist(); renderPBP();
+    
+    // 追加・更新後、リストを一番下にスクロールして最新を見えるようにする
+    setTimeout(() => {
+        const list = document.getElementById('pbpList');
+        if (list) list.scrollTop = list.scrollHeight;
+    }, 50);
 }
 
 function clearForm() {
@@ -413,5 +419,42 @@ function toast(msg, bg) {
     tt = setTimeout(() => el.classList.remove('show'), 2500);
 }
 
+/* ─── JSON Export ─────────────────────────── */
+function exportJSON() {
+    const away = state.awayName || 'AWAY', home = state.homeName || 'HOME';
+    const fn = `pbp_${away}_vs_${home}_${new Date().toISOString().slice(0, 10)}.json`
+        .replace(/[^a-zA-Z0-9_.\-]/g, '_');
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = fn;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    toast('📤 JSONを保存しました');
+}
+
+/* ─── JSON Import ─────────────────────────── */
+function importJSON() {
+    document.getElementById('jsonFileInput').click();
+}
+
+function handleJSONImport(input) {
+    const file = input.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (ev) {
+        try {
+            const loaded = JSON.parse(ev.target.result);
+            // 必須キーが存在するか簡易チェック
+            if (!loaded.plays || !loaded.quarterScores) throw new Error('invalid');
+            state = { ...state, ...loaded };
+            persist(); syncUI();
+            toast('📥 JSONを読み込みました');
+        } catch (e) {
+            toast('❌ ファイルの読み込みに失敗しました', '#ff4444');
+        }
+    };
+    reader.readAsText(file);
+    input.value = ''; // 同じファイルを再インポートできるようリセット
+}
+
 /* ─── Init ────────────────────────────────── */
 loadState(); syncUI();
+
