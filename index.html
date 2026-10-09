@@ -188,8 +188,23 @@
                 grid-template-columns: 1fr
             }
 
+            .pbp-col {
+                position: static !important;
+                max-height: none !important;
+            }
+
             .pbp-wrap {
-                max-height: 50vh
+                height: 55vh !important;
+                max-height: 55vh !important;
+            }
+
+            #boxScoreWrap,
+            #teamStatsWrap,
+            #fieldMapWrap,
+            #winProbWrap,
+            #gameReportWrap {
+                height: 55vh !important;
+                max-height: 55vh !important;
             }
 
             .form-card {
@@ -573,6 +588,16 @@
             min-height: 60px
         }
 
+        /* PBP Left Column — sticky container */
+        .pbp-col {
+            position: sticky;
+            top: 74px;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            max-height: calc(100vh - 90px);
+        }
+
         /* PBP container — scrollable independently */
         .pbp-wrap {
             background: var(--sf);
@@ -581,9 +606,10 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            flex: 1;
+            min-height: 0;
+            height: calc(100vh - 140px);
             max-height: calc(100vh - 140px);
-            position: sticky;
-            top: 74px
         }
 
         .pbp-hdr {
@@ -612,7 +638,10 @@
 
         #pbpList {
             overflow-y: auto;
-            flex: 1
+            -webkit-overflow-scrolling: touch;
+            flex: 1;
+            min-height: 0;
+            height: 100%;
         }
 
         /* Drive ended header */
@@ -924,11 +953,14 @@
         .tg-sack    { background: rgba(220, 90, 0, .14);  color: #c05500 }
         .tg-rush    { background: rgba(22, 163, 74, .14);  color: var(--gn) }
         .tg-td      { background: rgba(217, 119, 6, .18);  color: var(--yw) }
+        .tg-safety  { background: rgba(147, 51, 234, .18);  color: #7e22ce }
         .tg-xp      { background: rgba(217, 119, 6, .10);  color: #a06010 }
+        .tg-2pt     { background: rgba(217, 119, 6, .14);  color: #a06010 }
         .tg-fg      { background: rgba(109, 63, 212, .14); color: var(--a2) }
         .tg-punt,
         .tg-kick    { background: rgba(100, 116, 139, .15); color: var(--mt) }
         .tg-turnover{ background: rgba(229, 62, 62, .18);  color: #b91c1c }
+        .tg-fumble  { background: rgba(229, 62, 62, .18);  color: #b91c1c }
         .tg-penalty { background: rgba(229, 62, 62, .12);  color: var(--rd) }
         .tg-timeout { background: rgba(217, 119, 6, .12);  color: var(--yw) }
         .tg-other   { background: rgba(100, 116, 139, .12); color: var(--mt) }
@@ -1074,9 +1106,1041 @@
             background: var(--bg)
         }
 
-        ::-webkit-scrollbar-thumb {
-            background: var(--bd);
-            border-radius: 3px
+        /* --- Step 1 Dynamic Builder & Pickers CSS --- */
+        .picker-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .picker-col {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .picker-col label {
+            font-size: .68rem;
+            color: var(--mt);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .dial-wrap {
+            display: flex;
+            align-items: center;
+            background: var(--cd);
+            border: 1px solid var(--bd);
+            border-radius: 8px;
+            padding: 4px 8px;
+            justify-content: center;
+            gap: 4px;
+        }
+        .dial-sel {
+            background: transparent;
+            border: none;
+            color: var(--tx);
+            font-family: 'Orbitron', monospace;
+            font-size: .95rem;
+            font-weight: 700;
+            outline: none;
+            cursor: pointer;
+            text-align: center;
+        }
+        .dial-sep {
+            font-weight: 700;
+            color: var(--ac);
+        }
+
+        .builder-box {
+            background: var(--bg);
+            border: 1px dashed var(--bd);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 12px;
+        }
+        .builder-title {
+            font-size: .72rem;
+            font-weight: 700;
+            color: var(--mt);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .b-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .b-step-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .b-step-lbl {
+            font-size: .68rem;
+            font-weight: 700;
+            color: var(--ac);
+            min-width: 65px;
+        }
+        .b-sel, .b-inp {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            color: var(--tx);
+            font-size: .8rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            outline: none;
+        }
+        .b-sel:focus, .b-inp:focus {
+            border-color: var(--ac);
+        }
+        .b-preview-wrap {
+            margin-top: 8px;
+            background: rgba(0, 144, 200, 0.05);
+            border-left: 3px solid var(--ac);
+            padding: 6px 10px;
+            border-radius: 0 6px 6px 0;
+            font-size: .8rem;
+            color: var(--tx);
+            min-height: 28px;
+            display: flex;
+            align-items: center;
+        }
+        .b-preview-lbl {
+            font-size: .65rem;
+            color: var(--mt);
+            font-weight: 700;
+            margin-right: 6px;
+            text-transform: uppercase;
+        }
+        .b-preview-text {
+            font-weight: 600;
+            color: var(--tx);
+        }
+
+        /* + Option pills */
+        .opt-section {
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid var(--bd);
+        }
+        .opt-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .opt-btn-trigger {
+            background: rgba(0, 144, 200, 0.12);
+            color: var(--ac);
+            border: 1px dashed var(--ac);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: .75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .opt-btn-trigger:hover {
+            background: var(--ac);
+            color: #fff;
+        }
+        .opt-selector-menu {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 6px;
+            margin-bottom: 8px;
+            background: var(--sf);
+            padding: 8px;
+            border: 1px solid var(--bd);
+            border-radius: 8px;
+        }
+        .opt-pill {
+            background: var(--cd);
+            border: 1px solid var(--bd);
+            color: var(--tx);
+            padding: 4px 9px;
+            font-size: .72rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: .15s;
+        }
+        .opt-pill:hover {
+            border-color: var(--ac);
+            color: var(--ac);
+        }
+        .opt-active-chain {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .opt-card {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: 6px;
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .opt-card-title {
+            font-size: .7rem;
+            font-weight: 700;
+            color: var(--a2);
+        }
+        .opt-card-body {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+        .opt-del-btn {
+            background: 0;
+            border: none;
+            color: var(--rd);
+            cursor: pointer;
+            font-size: .85rem;
+            padding: 2px 4px;
+        }
+
+        .d-pc-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .dmi-playcount {
+            width: 38px;
+            background: transparent;
+            border: 0;
+            border-bottom: 1px solid var(--bd);
+            color: var(--tx);
+            font-size: .75rem;
+            font-weight: 700;
+            text-align: center;
+            outline: none;
+        }
+        .dmi-playcount:focus {
+            border-color: var(--ac);
+        }
+        @keyframes flashPlay {
+            0% { background: rgba(0, 200, 83, 0.45); }
+            50% { background: rgba(0, 200, 83, 0.25); }
+            100% { background: transparent; }
+        }
+        .flash-new {
+            animation: flashPlay 1.2s ease-out;
+        }
+
+        /* View tabs (PBP vs Box Score) */
+        .view-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        .view-tab-btn {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            color: var(--tx);
+            border-radius: 6px;
+            padding: 6px 14px;
+            font-size: .8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .15s;
+        }
+        .view-tab-btn:hover {
+            border-color: var(--ac);
+        }
+        .view-tab-btn.active {
+            background: var(--ac);
+            color: #fff;
+            border-color: var(--ac);
+            box-shadow: 0 2px 8px rgba(0, 144, 200, 0.3);
+        }
+
+        /* Rule toggle buttons & badge */
+        .rule-toggle-wrap {
+            display: inline-flex;
+            border: 1px solid var(--bd);
+            border-radius: 5px;
+            overflow: hidden;
+            background: var(--cd);
+        }
+        .rule-btn {
+            background: transparent;
+            border: none;
+            color: var(--mt);
+            font-size: .76rem;
+            font-weight: 700;
+            padding: 3px 9px;
+            cursor: pointer;
+            transition: all .15s;
+        }
+        .rule-btn:hover {
+            color: var(--tx);
+        }
+        .rule-btn.active {
+            background: var(--ac);
+            color: #fff;
+        }
+        .bs-rule-badge {
+            font-size: .68rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+            letter-spacing: .5px;
+        }
+        .bs-rule-badge.nfl {
+            background: rgba(0, 144, 200, 0.15);
+            color: var(--ac);
+            border: 1px solid rgba(0, 144, 200, 0.3);
+        }
+        .bs-rule-badge.college {
+            background: rgba(230, 81, 0, 0.15);
+            color: #ff9800;
+            border: 1px solid rgba(230, 81, 0, 0.3);
+        }
+        .bs-rule-badge.japan {
+            background: rgba(220, 38, 38, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        /* Box score container */
+        #boxScoreWrap {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: var(--r);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+            height: calc(100vh - 140px);
+            max-height: calc(100vh - 140px);
+        }
+        #boxScoreContainer {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            flex: 1;
+            min-height: 0;
+            padding: 12px;
+        }
+        .bs-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 11px 14px;
+            background: var(--cd);
+            border-bottom: 1px solid var(--bd);
+            flex-shrink: 0;
+            border-bottom: 1px solid var(--bd);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .bs-flt-wrap {
+            display: flex;
+            gap: 4px;
+        }
+        .bs-flt-btn {
+            background: transparent;
+            border: 1px solid var(--bd);
+            color: var(--mt);
+            border-radius: 4px;
+            padding: 3px 8px;
+            font-size: .74rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .bs-flt-btn:hover {
+            color: var(--tx);
+            border-color: var(--ac);
+        }
+        .bs-flt-btn.active {
+            background: var(--ac);
+            color: #fff;
+            border-color: var(--ac);
+        }
+        .bs-section {
+            margin-bottom: 22px;
+        }
+        .bs-team-heading {
+            font-size: .92rem;
+            font-weight: 800;
+            padding: 6px 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            background: rgba(0, 144, 200, 0.08);
+            border-left: 4px solid var(--ac);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .bs-team-heading.home-side {
+            background: rgba(255, 61, 0, 0.08);
+            border-left-color: var(--a2);
+        }
+        .bs-tbl-card {
+            background: var(--bg);
+            border: 1px solid var(--bd);
+            border-radius: 6px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .bs-tbl-title {
+            font-size: .74rem;
+            font-weight: 800;
+            color: var(--tx);
+            padding: 6px 10px;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid var(--bd);
+            letter-spacing: .5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .bs-table-wrap {
+            overflow-x: auto;
+        }
+        .bs-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .74rem;
+            white-space: nowrap;
+        }
+        .bs-table th {
+            padding: 5px 8px;
+            text-align: right;
+            color: var(--mt);
+            font-weight: 700;
+            border-bottom: 1px solid var(--bd);
+            font-size: .68rem;
+            background: rgba(0,0,0,0.1);
+        }
+        .bs-table th:first-child {
+            text-align: left;
+        }
+        .bs-table td {
+            padding: 5px 8px;
+            text-align: right;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            color: var(--tx);
+        }
+        .bs-table td:first-child {
+            text-align: left;
+            font-weight: 600;
+        }
+        .bs-table tr:hover td {
+            background: rgba(255,255,255,0.02);
+        }
+        .bs-tot-row td {
+            font-weight: 700;
+            border-top: 1px solid var(--bd);
+            border-bottom: none;
+            background: rgba(0,0,0,0.15);
+        }
+        .bs-unknown {
+            color: var(--mt);
+            font-style: italic;
+        }
+        .bs-noyds-mark {
+            color: var(--rd);
+            font-weight: 700;
+            margin-left: 2px;
+            font-size: .85em;
+        }
+        .bs-footnote {
+            font-size: .68rem;
+            color: var(--mt);
+            padding: 4px 8px;
+            font-style: italic;
+            border-top: 1px dashed rgba(255,255,255,0.05);
+        }
+
+        /* Team Stats Container & Tables */
+        #teamStatsWrap {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: var(--r);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+            height: calc(100vh - 140px);
+            max-height: calc(100vh - 140px);
+        }
+        #teamStatsContainer {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            flex: 1;
+            min-height: 0;
+            padding: 12px;
+        }
+        .ts-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 11px 14px;
+            background: var(--cd);
+            border-bottom: 1px solid var(--bd);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .ts-tbl-card {
+            background: var(--bg);
+            border: 1px solid var(--bd);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .ts-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .8rem;
+        }
+        .ts-table th {
+            background: var(--cd);
+            padding: 7px 10px;
+            font-weight: 700;
+            text-align: center;
+            border-bottom: 2px solid var(--bd);
+        }
+        .ts-table th.col-stat {
+            text-align: left;
+            width: 44%;
+        }
+        .ts-table td {
+            padding: 6px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            text-align: center;
+        }
+        .ts-table td.col-stat {
+            text-align: left;
+            font-weight: 600;
+            color: var(--tx);
+        }
+        .ts-table tr:hover {
+            background: rgba(255,255,255,0.02);
+        }
+        .ts-sub-stat {
+            padding-left: 20px !important;
+            font-size: .75rem;
+            color: var(--mt);
+            font-weight: 400 !important;
+        }
+        .ts-val-hl {
+            font-weight: 800;
+            color: var(--ac);
+        }
+
+        /* Manual Stats Edit Mode */
+        .stat-manual-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: rgba(217, 119, 6, 0.12);
+            border: 1px solid rgba(217, 119, 6, 0.3);
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: .76rem;
+            color: #f59e0b;
+        }
+        .stat-edit-btn {
+            background: transparent;
+            border: 1px solid var(--bd);
+            color: var(--tx);
+            font-size: .72rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all .15s;
+        }
+        .stat-edit-btn:hover {
+            border-color: var(--ac);
+            color: var(--ac);
+        }
+        .stat-edit-btn.editing {
+            background: rgba(217, 119, 6, 0.2);
+            border-color: #f59e0b;
+            color: #f59e0b;
+        }
+        .stat-inp {
+            background: var(--cd);
+            border: 1px solid var(--bd);
+            color: var(--tx);
+            font-size: .75rem;
+            text-align: center;
+            padding: 2px 4px;
+            border-radius: 3px;
+            width: 100%;
+            max-width: 90px;
+            box-sizing: border-box;
+        }
+        .stat-inp:focus {
+            outline: none;
+            border-color: var(--ac);
+            background: var(--bg);
+        }
+        /* ─── Field Map Styles ─── */
+        #fieldMapWrap {
+            display: flex;
+            flex-direction: column;
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: var(--r);
+            overflow: hidden;
+            height: calc(100vh - 140px);
+            max-height: calc(100vh - 140px);
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        .fm-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--cd);
+            border-bottom: 1px solid var(--bd);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .fm-flt-wrap {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .fm-drives-bar {
+            display: flex;
+            gap: 5px;
+            padding: 6px 10px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--bd);
+            flex-wrap: wrap;
+            max-height: 85px;
+            overflow-y: auto;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+        .fm-drive-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 5px;
+            border: 1px solid var(--bd);
+            background: var(--cd);
+            color: var(--mt);
+            font-size: .71rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .15s;
+            white-space: nowrap;
+        }
+        .fm-drive-pill:hover {
+            border-color: var(--ac);
+            color: var(--tx);
+        }
+        .fm-drive-pill.active {
+            background: var(--ac);
+            color: #fff;
+            border-color: var(--ac);
+            box-shadow: 0 2px 8px rgba(0, 144, 200, 0.3);
+        }
+        .fm-drive-pill.has-td {
+            border-color: #f59e0b;
+        }
+        .fm-drive-pill.has-td.active {
+            background: #d97706;
+            border-color: #d97706;
+        }
+        #fieldMapContainer {
+            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        .fm-field-card {
+            background: #0d1f12;
+            border: 2px solid #2e7d32;
+            border-radius: 8px;
+            padding: 6px;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        .fm-svg-wrap {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            overflow: hidden;
+            display: block;
+        }
+        .fm-svg-field {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            height: auto;
+        }
+        .fm-legend-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 6px 8px;
+            font-size: .7rem;
+            color: #ccc;
+            flex-wrap: wrap;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            margin-top: 5px;
+        }
+        .fm-leg-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .fm-leg-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .fm-summary-card {
+            background: var(--cd);
+            border: 1px solid var(--bd);
+            border-radius: 6px;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .fm-summary-title {
+            font-size: .88rem;
+            font-weight: 700;
+            color: var(--tx);
+        }
+        .fm-summary-badges {
+            display: flex;
+            gap: 8px;
+            font-size: .75rem;
+            flex-wrap: wrap;
+        }
+        .fm-badge {
+            padding: 2px 7px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid var(--bd);
+            font-weight: 600;
+        }
+        .fm-plays-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .fm-play-item {
+            background: var(--bg);
+            border: 1px solid var(--bd);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: .78rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            cursor: pointer;
+            transition: all .15s;
+        }
+        .fm-play-item:hover, .fm-play-item.highlighted {
+            border-color: var(--ac);
+            background: rgba(0, 144, 200, 0.05);
+            transform: translateX(2px);
+        }
+        .fm-warn-badge {
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: .7rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .fm-warn-badge:hover {
+            background: #fde68a;
+        }
+
+        /* ─── Win Probability Styles ─── */
+        #winProbWrap {
+            display: flex;
+            flex-direction: column;
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: var(--r);
+            overflow: hidden;
+            height: calc(100vh - 140px);
+            max-height: calc(100vh - 140px);
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        .wp-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--cd);
+            border-bottom: 1px solid var(--bd);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .wp-status-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: .78rem;
+            font-weight: 700;
+        }
+        #winProbContainer {
+            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        .wp-chart-card {
+            background: #0a1020;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 8px;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        .wp-svg-wrap {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            overflow: hidden;
+        }
+        .wp-svg-chart {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            height: auto;
+        }
+        .wp-meter-bar {
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            display: flex;
+            background: #1e293b;
+            margin: 4px 0 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .wp-meter-away {
+            background: linear-gradient(90deg, #0284c7, #38bdf8);
+            transition: width .3s;
+        }
+        .wp-meter-home {
+            background: linear-gradient(90deg, #f87171, #dc2626);
+            transition: width .3s;
+        }
+        .wp-turns-card {
+            background: var(--bg);
+            border: 1px solid var(--bd);
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+        .wp-turn-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 7px 4px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: .78rem;
+            cursor: pointer;
+            transition: all .15s;
+        }
+        .wp-turn-item:hover {
+            color: var(--ac);
+            transform: translateX(2px);
+        }
+        .wp-shift-badge {
+            font-weight: 800;
+            font-size: .72rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .wp-shift-away {
+            background: rgba(14, 165, 233, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+        }
+        .wp-shift-home {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* ─── Game Report & Analysis Styles ─── */
+        #gameReportWrap {
+            display: flex;
+            flex-direction: column;
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: var(--r);
+            overflow: hidden;
+            height: calc(100vh - 140px);
+            max-height: calc(100vh - 140px);
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        .gr-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--cd);
+            border-bottom: 1px solid var(--bd);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        #gameReportContainer {
+            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        .gr-card {
+            background: var(--bg);
+            border: 1px solid var(--bd);
+            border-radius: 8px;
+            padding: 12px 14px;
+        }
+        .gr-card-title {
+            font-size: .88rem;
+            font-weight: 700;
+            color: var(--tx);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .gr-summary-text {
+            font-size: .82rem;
+            line-height: 1.7;
+            color: var(--tx);
+            white-space: pre-wrap;
+            background: rgba(255,255,255,0.02);
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .gr-factor-item {
+            padding: 9px 11px;
+            background: rgba(255,255,255,0.02);
+            border-left: 3px solid var(--ac);
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 8px;
+            font-size: .8rem;
+            line-height: 1.55;
+        }
+        .gr-factor-item.key {
+            border-left-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.05);
+        }
+        .gr-factor-item.warning {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.05);
+        }
+        .gr-factor-item.success {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+        .gr-factor-title {
+            font-weight: 700;
+            font-size: .82rem;
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .gr-copy-btn {
+            background: var(--cd);
+            border: 1px solid var(--bd);
+            color: var(--tx);
+            font-size: .74rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all .15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .gr-copy-btn:hover {
+            border-color: var(--ac);
+            color: var(--ac);
         }
     </style>
 </head>
@@ -1092,6 +2156,10 @@
             <input type="file" id="jsonFileInput" accept=".json" style="display:none" onchange="handleJSONImport(this)" />
         </div>
     </header>
+    <div id="fileProtocolBanner" style="display:none;background:#fffbeb;border-bottom:1px solid #fde68a;color:#92400e;padding:7px 16px;font-size:.78rem;text-align:center;line-height:1.5;">
+        💡 <strong>ローカルファイル（file://）で直接開いているため、ブラウザ（Firefox等）の仕様でリロード時にデータが保持されない場合があります。</strong><br/>
+        リロードしてもデータを消さずに作業したい場合は、フォルダ内の <strong><code>start_pbp.bat</code></strong> をダブルクリックして起動するか、右上の「📤 JSON書出」で定期的に保存してください。
+    </div>
 
     <div class="container">
         <!-- Scoreboard -->
@@ -1111,8 +2179,8 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input class="tn-inp" id="awayName" maxlength="20" placeholder="AWAY"
-                                    oninput="saveGame();updatePossOpts()" /><input class="tc-inp" id="awayCity"
+                            <td><input class="tn-inp" id="awayName" maxlength="20" placeholder="AWAY" list="teamListDatalist"
+                                    oninput="saveGame();onTeamNameInput('away');updatePossOpts()" /><input class="tc-inp" id="awayCity"
                                     maxlength="24" placeholder="City" oninput="saveGame()" /></td>
                             <td><input class="qs-inp" id="aq0" type="number" min="0" max="99" value="0"
                                     oninput="saveGame()" /></td>
@@ -1128,8 +2196,8 @@
                                     oninput="saveGame()" /></td>
                         </tr>
                         <tr>
-                            <td><input class="tn-inp" id="homeName" maxlength="20" placeholder="HOME"
-                                    oninput="saveGame();updatePossOpts()" /><input class="tc-inp" id="homeCity"
+                            <td><input class="tn-inp" id="homeName" maxlength="20" placeholder="HOME" list="teamListDatalist"
+                                    oninput="saveGame();onTeamNameInput('home');updatePossOpts()" /><input class="tc-inp" id="homeCity"
                                     maxlength="24" placeholder="City" oninput="saveGame()" /></td>
                             <td><input class="qs-inp" id="hq0" type="number" min="0" max="99" value="0"
                                     oninput="saveGame()" /></td>
@@ -1146,6 +2214,7 @@
                         </tr>
                     </tbody>
                 </table>
+                <datalist id="teamListDatalist"></datalist>
                 <!-- Game Info Row -->
                 <div class="gi-row">
                     <div class="gi-item"><span class="gi-lbl">  日時</span><input class="gi-inp" id="gameTime"
@@ -1156,18 +2225,102 @@
                             placeholder="例: Super Bowl LX" maxlength="40" oninput="saveGame()" /></div>
                     <div class="gi-item"><span class="gi-lbl">🌤 天候</span><input class="gi-inp" id="gameWeather"
                             placeholder="例: 72°F, Clear" maxlength="30" oninput="saveGame()" /></div>
+                    <div class="gi-item"><span class="gi-lbl">📜 規程</span>
+                        <div class="rule-toggle-wrap">
+                            <button type="button" class="rule-btn active" id="ruleBtnNFL" onclick="setRuleType('nfl')">NFL</button>
+                            <button type="button" class="rule-btn" id="ruleBtnCollege" onclick="setRuleType('college')">カレッジ</button>
+                            <button type="button" class="rule-btn" id="ruleBtnJapan" onclick="setRuleType('japan')">日本の大学</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="two-col">
-            <div>
+            <div class="pbp-col">
+                <div class="view-tabs">
+                    <button type="button" class="view-tab-btn active" id="tabBtnPBP" onclick="switchViewTab('pbp')">🏈 Play-by-Play</button>
+                    <button type="button" class="view-tab-btn" id="tabBtnBoxScore" onclick="switchViewTab('boxscore')">📊 Box Score (個人スタッツ)</button>
+                    <button type="button" class="view-tab-btn" id="tabBtnTeamStats" onclick="switchViewTab('teamstats')">📈 チームスタッツ</button>
+                    <button type="button" class="view-tab-btn" id="tabBtnFieldMap" onclick="switchViewTab('fieldmap')">🏟️ Field Map</button>
+                    <button type="button" class="view-tab-btn" id="tabBtnWinProb" onclick="switchViewTab('winprob')">📈 勝率グラフ</button>
+                    <button type="button" class="view-tab-btn" id="tabBtnReport" onclick="switchViewTab('report')">📝 戦評・分析レポート</button>
+                </div>
                 <div class="pbp-wrap">
                     <div class="pbp-hdr">
                         <span class="pbp-title">PLAY BY PLAY</span>
                         <span class="pbp-cnt" id="pbpCount">0 plays</span>
                     </div>
                     <div id="pbpList"></div>
+                </div>
+                <div id="boxScoreWrap" style="display:none">
+                    <div class="bs-hdr">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <span class="pbp-title" style="margin:0">BOX SCORE</span>
+                            <span class="bs-rule-badge nfl" id="bsRuleBadge">🏈 NFL規程</span>
+                            <span class="pbp-cnt" id="bsTotalPlays">0 plays</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                            <div class="bs-flt-wrap">
+                                <button type="button" class="bs-flt-btn active" id="bsFltAll" onclick="setBoxScoreFilter('all')">全チーム</button>
+                                <button type="button" class="bs-flt-btn" id="bsFltAway" onclick="setBoxScoreFilter('away')">AWAY</button>
+                                <button type="button" class="bs-flt-btn" id="bsFltHome" onclick="setBoxScoreFilter('home')">HOME</button>
+                            </div>
+                            <button type="button" class="stat-edit-btn" id="btnToggleManualEditBS" onclick="handleManualEditButtonClick()">✏️ 手動編集</button>
+                        </div>
+                    </div>
+                    <div id="boxScoreContainer"></div>
+                </div>
+                <div id="teamStatsWrap" style="display:none">
+                    <div class="ts-hdr">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <span class="pbp-title" style="margin:0">TEAM STATS</span>
+                            <span class="bs-rule-badge nfl" id="tsRuleBadge">🏈 NFL規程</span>
+                            <span class="pbp-cnt" id="tsTotalPlays">0 plays</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                            <button type="button" class="stat-edit-btn" id="btnToggleManualEditTS" onclick="handleManualEditButtonClick()">✏️ 手動編集</button>
+                        </div>
+                    </div>
+                    <div id="teamStatsContainer"></div>
+                </div>
+                <div id="fieldMapWrap" style="display:none">
+                    <div class="fm-hdr">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <span class="pbp-title" style="margin:0">FIELD MAP & DRIVES</span>
+                            <span class="pbp-cnt" id="fmDrivesCount">0 drives</span>
+                        </div>
+                        <div class="fm-flt-wrap">
+                            <button type="button" class="bs-flt-btn active" id="fmFltAll" onclick="setFieldMapFilter('all')">全ドライブ</button>
+                            <button type="button" class="bs-flt-btn" id="fmFltScores" onclick="setFieldMapFilter('scores')">得点(TD/FG)のみ</button>
+                            <button type="button" class="bs-flt-btn" id="fmFltAway" onclick="setFieldMapFilter('away')">AWAY</button>
+                            <button type="button" class="bs-flt-btn" id="fmFltHome" onclick="setFieldMapFilter('home')">HOME</button>
+                        </div>
+                    </div>
+                    <div class="fm-drives-bar" id="fmDrivesBar"></div>
+                    <div id="fieldMapContainer"></div>
+                </div>
+                <div id="winProbWrap" style="display:none">
+                    <div class="wp-hdr">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <span class="pbp-title" style="margin:0">WIN PROBABILITY</span>
+                            <span class="pbp-cnt" id="wpPlaysCount">0 plays</span>
+                        </div>
+                        <div class="wp-status-bar" id="wpStatusBar"></div>
+                    </div>
+                    <div id="winProbContainer"></div>
+                </div>
+                <div id="gameReportWrap" style="display:none">
+                    <div class="gr-hdr">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <span class="pbp-title" style="margin:0">GAME REPORT & ANALYSIS</span>
+                            <span class="pbp-cnt" id="grPlaysCount">0 plays</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <button type="button" class="gr-copy-btn" onclick="copyGameReportToClipboard()">📋 レポート全文をコピー</button>
+                        </div>
+                    </div>
+                    <div id="gameReportContainer"></div>
                 </div>
             </div>
             <div>
@@ -1182,9 +2335,16 @@
                             <button class="q-btn" onclick="setQ(5)" id="qb5">OT</button>
                         </div>
                     </div>
-                    <div class="sit-row">
-                        <div class="mi-w"><span class="mi-l">Time</span><input class="mi-i" id="inp_time"
-                                placeholder="15:00" maxlength="6" /></div>
+                    <div class="sit-row" style="align-items:flex-end">
+                        <div class="mi-w">
+                            <span class="mi-l">Time</span>
+                            <div class="dial-wrap">
+                                <select class="dial-sel" id="inp_time_min" onchange="syncTimeInput()"></select>
+                                <span class="dial-sep">:</span>
+                                <select class="dial-sel" id="inp_time_sec" onchange="syncTimeInput()"></select>
+                            </div>
+                            <input type="hidden" id="inp_time" value="" />
+                        </div>
                         <div class="mi-w"><span class="mi-l">Down</span>
                             <select class="mi-i" id="inp_down">
                                 <option value="">--</option>
@@ -1195,62 +2355,88 @@
                             </select>
                         </div>
                         <div class="mi-w"><span class="mi-l">Distance</span>
-                            <select class="mi-i" id="inp_dist" style="width:90px">
+                            <select class="mi-i" id="inp_dist" style="width:96px">
                                 <option value="">--</option>
-                                <option value="10">10</option>
-                                <option value="Short">Short</option>
-                                <option value="Medium">Medium</option>
-                                <option value="Long">Long</option>
-                                <option disabled>──────</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                                <option value="11">11</option>
-                                <option value="12">12</option>
-                                <option value="13">13</option>
-                                <option value="14">14</option>
-                                <option value="15">15</option>
+                                <option value="inches">inches</option>
+                                <option value="Goal">Goal</option>
+                                <option value="short">short</option>
+                                <option value="mid">mid</option>
+                                <option value="long">long</option>
                             </select>
                         </div>
-                        <div class="mi-w"><span class="mi-l">Ball at</span><input class="mi-i" id="inp_yardline"
-                                placeholder="NYJ 35" maxlength="8" /></div>
+                        <div class="mi-w"><span class="mi-l">Ball at</span>
+                            <div style="display:flex;gap:3px">
+                                <select class="mi-i" id="inp_ball_side" style="width:62px;padding:4px 2px">
+                                    <option value="">--</option>
+                                    <option value="away">AWAY</option>
+                                    <option value="home">HOME</option>
+                                </select>
+                                <select class="mi-i" id="inp_ball_yd" style="width:48px;padding:4px 2px"></select>
+                            </div>
+                            <input type="hidden" id="inp_yardline" />
+                        </div>
                     </div>
                 </div>
                 <div class="form-card">
                     <div class="fm-title" id="fmTitle">＋ Add Play</div>
                     <div class="fg"><label class="fl">ポゼッション</label>
-                        <select class="fs" id="frm_poss">
+                        <select class="fs" id="frm_poss" onchange="onPossessionChange()">
                             <option value="">-- チームを選択 --</option>
                             <option value="away">AWAY</option>
                             <option value="home">HOME</option>
                         </select>
                     </div>
                     <div class="fg"><label class="fl">プレイタイプ</label>
-                        <select class="fs" id="frm_type">
+                        <select class="fs" id="frm_type" onchange="onPlayTypeChange()">
                             <option value="pass">🎯 Pass</option>
+                            <option value="rush">🏃 Run</option>
                             <option value="inc">❌ Pass Incomplete</option>
-                            <option value="rush">🏃 Rush</option>
-                            <option value="td">🏆 Touchdown</option>
+                            <option value="intercept">🔒 Intercept</option>
                             <option value="xp">✅ Extra Point</option>
+                            <option value="2pt">✌️ 2pt Conversion</option>
                             <option value="fg">🎯 Field Goal</option>
                             <option value="punt">👟 Punt</option>
                             <option value="kick">🦶 Kickoff</option>
-                            <option value="turnover">🔄 Turnover</option>
                             <option value="sack">💥 Sack</option>
                             <option value="penalty">🚩 Penalty</option>
                             <option value="timeout">⏱ Timeout</option>
                             <option value="other">📋 Other</option>
                         </select>
                     </div>
-                    <div class="fg"><label class="fl">説明文</label><textarea class="fta" id="frm_desc"
-                            placeholder="例: Brady passes to Gronkowski for 12 yards."></textarea></div>
+
+                    <!-- Step-by-Step Interactive Play Builder -->
+                    <div class="builder-box" id="builderBox">
+                        <div class="builder-title">
+                            <span>⚡ Play Builder</span>
+                            <span style="font-size:.65rem;color:var(--mt);font-weight:400">ステップ順に選択</span>
+                        </div>
+                        <div class="b-steps" id="bStepsContainer">
+                            <!-- Dynamic steps rendered by JS -->
+                        </div>
+                        <div class="b-preview-wrap">
+                            <span class="b-preview-lbl">Preview:</span>
+                            <span class="b-preview-text" id="bPreviewText">—</span>
+                        </div>
+                    </div>
+
+                    <!-- + Options Section -->
+                    <div class="opt-section">
+                        <div class="opt-hdr">
+                            <span class="fl" style="margin-bottom:0">＋ 追加オプション</span>
+                            <button type="button" class="opt-btn-trigger" onclick="toggleOptMenu()">
+                                <span>＋ オプション追加</span>
+                            </button>
+                        </div>
+                        <div class="opt-selector-menu" id="optSelectorMenu" style="display:none">
+                            <!-- Available option pills rendered by JS based on current play type -->
+                        </div>
+                        <div class="opt-active-chain" id="optActiveChain">
+                            <!-- Currently added options list -->
+                        </div>
+                    </div>
+
+                    <div class="fg" style="margin-top:12px"><label class="fl">自由記述・補足（任意・自動生成を上書き/追記）</label><textarea class="fta" id="frm_desc"
+                            placeholder="※ 上のBuilderから自動生成されます。手動で微調整も可能です。"></textarea></div>
                     <div class="fg"><label class="fl">スコア更新（任意）</label><input class="fi" id="frm_score"
                             placeholder="例: KC 7 – PHI 0" maxlength="30" /></div>
                     <button class="btn btn-p" style="width:100%;justify-content:center;margin-bottom:7px"
@@ -1279,6 +2465,39 @@
             <p id="delDesc"></p>
             <div class="mact"><button class="btn btn-s" onclick="closeMo('delMo')">キャンセル</button><button
                     class="btn btn-d" onclick="confirmDel()">削除する</button></div>
+        </div>
+    </div>
+
+    <!-- Modal: Manual Stats Edit Confirm -->
+    <div class="mo" id="manualEditMo">
+        <div class="mc">
+            <h3>✏️ スタッツ手動編集モードへの切替</h3>
+            <p style="font-size:.82rem;line-height:1.6;color:var(--tx);margin:12px 0 16px;">
+                個人スタッツおよびチームスタッツの各数値を手動で直接入力・変更できるモードに切り替えます。<br/>
+                切り替え時に、<strong>現在の自動集計状態がJSONファイルとしてバックアップ保存</strong>されます。<br/><br/>
+                <span style="color:#f59e0b;font-weight:700">⚠️ ご注意:</span><br/>
+                手動編集モード中は、PBPを操作しても手動で修正した数値は保護（維持）されます。<br/>
+                PBPからの自動再計算に戻したい場合は、いつでも画面上の「🔄 自動再計算に戻す」ボタンで復帰できます。
+            </p>
+            <div class="mact">
+                <button class="btn btn-s" onclick="closeMo('manualEditMo')">キャンセル</button>
+                <button class="btn btn-w" onclick="confirmManualEditMode()">はい、手動編集を開始する</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Reset Manual Stats Confirm -->
+    <div class="mo" id="resetManualMo">
+        <div class="mc">
+            <h3>🔄 自動再計算に戻しますか？</h3>
+            <p style="font-size:.82rem;line-height:1.6;color:var(--tx);margin:12px 0 16px;">
+                手動で入力・修正したスタッツ数値を破棄し、PBPのプレイ履歴から最新の自動計算値に戻します。<br/>
+                この操作は取り消せません。よろしいですか？
+            </p>
+            <div class="mact">
+                <button class="btn btn-s" onclick="closeMo('resetManualMo')">キャンセル</button>
+                <button class="btn btn-d" onclick="confirmResetManualStats()">自動再計算に戻す</button>
+            </div>
         </div>
     </div>
 
